@@ -20,6 +20,7 @@ import info.gorzkowski.jinq.jpa.model.Customer;
 import info.gorzkowski.jinq.jpa.model.Lineorder;
 import org.jinq.jpa.JPAJinqStream;
 import org.jinq.jpa.JPAQueryLogger;
+import org.jinq.jpa.JPQL;
 import org.jinq.jpa.JinqJPAStreamProvider;
 import org.jinq.orm.stream.JinqStream;
 import org.junit.After;
@@ -71,6 +72,18 @@ public class JinqDbTest {
         customers
                 .join(c -> JinqStream.from(c.getSales()))
                 .forEach(System.out::println);
+    }
+
+    @Test
+    public void shouldFindCustomerWithGivenName() {
+        //given
+        JPAJinqStream<Customer> customers = streams.streamAll(em, Customer.class);
+
+        //when, then
+        customers
+                .where(c -> c.getName().equals("Alice"))
+                .forEach(System.out::println);
+
     }
 
     @After
