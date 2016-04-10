@@ -80,4 +80,13 @@ public class Lineorder implements Serializable {
       this.sale = sale;
    }
 
+   @Override
+   public String toString() {
+      return "Lineorder{" +
+              "total=" + total +
+              ", transactionConfirmation=" + transactionConfirmation +
+              ", quantity=" + quantity +
+              ", item=" + item +
+              '}';
+   }
 }

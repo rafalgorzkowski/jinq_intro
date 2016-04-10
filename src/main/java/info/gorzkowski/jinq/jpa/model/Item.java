@@ -129,4 +129,14 @@ public class Item implements Serializable {
       return lineorder;
    }
 
+   @Override
+   public String toString() {
+      return "Item{" +
+              "type=" + type +
+              ", itemid=" + itemid +
+              ", name='" + name + '\'' +
+              ", purchaseprice=" + purchaseprice +
+              ", saleprice=" + saleprice +
+              '}';
+   }
 }

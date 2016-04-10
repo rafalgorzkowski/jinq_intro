@@ -12,21 +12,21 @@
 
 package info.gorzkowski.jinq;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
 import info.gorzkowski.jinq.jpa.model.Customer;
 import info.gorzkowski.jinq.jpa.model.Lineorder;
+import info.gorzkowski.jinq.jpa.model.Sale;
 import org.jinq.jpa.JPAJinqStream;
 import org.jinq.jpa.JPAQueryLogger;
-import org.jinq.jpa.JPQL;
 import org.jinq.jpa.JinqJPAStreamProvider;
 import org.jinq.orm.stream.JinqStream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
 public class JinqDbTest {
 
@@ -41,17 +41,18 @@ public class JinqDbTest {
     @Before
     public void setUp() throws NoSuchMethodException {
         entityManagerFactory = Persistence.createEntityManagerFactory("JPATest");
-        streams = new JinqJPAStreamProvider(entityManagerFactory);
         SampleDbCreator.createDatabase(entityManagerFactory);
+        em = entityManagerFactory.createEntityManager();
+
         streams = new JinqJPAStreamProvider(entityManagerFactory);
 
         streams.registerAssociationAttribute(Lineorder.class.getMethod("getItem"), "item", false);
         streams.registerAssociationAttribute(Lineorder.class.getMethod("getSale"), "sale", false);
+        streams.registerAssociationAttribute(Sale.class.getMethod("getCustomer"), "customer", false);
 
         // Configure Jinq to output the queries it executes
         streams.setHint("queryLogger", (JPAQueryLogger) (query, positionParameters, namedParameters) -> System.out.println("  " + query));
 
-        em = entityManagerFactory.createEntityManager();
     }
 
     @Test
@@ -61,6 +62,38 @@ public class JinqDbTest {
 
         //when, then
         customers.forEach(System.out::println);
+    }
+
+    @Test
+    public void shouldTestSelectAllList() {
+        //given
+        JPAJinqStream<Customer> customersStream = streams.streamAll(em, Customer.class);
+
+        //when
+        customersStream.where(c -> c.getName().equals("Alice"))
+                .selectAllList(c -> c.getSales())
+                .where(s -> JinqStream.from(s.getLineorders()).count() > 1)
+                .forEach(System.out::println);
+    }
+
+    @Test
+    public void testIsNull() {
+        //given
+        JPAJinqStream<Customer> customersStream = streams.streamAll(em, Customer.class);
+
+        //when
+        customersStream.where(c -> c.getName() != null)
+                .forEach(System.out::println);
+    }
+
+    @Test
+    public void shouldTestDistinctClause() {
+
+        streams.streamAll(em, Sale.class)
+                .joinFetchList(s -> s.getLineorders())
+                .where(s -> s.getCustomer().getName().equals("Alice"))
+                .distinct()
+                .forEach(System.out::println);
     }
 
     @Test
