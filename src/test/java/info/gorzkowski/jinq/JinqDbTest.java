@@ -19,6 +19,7 @@ import org.jinq.jpa.JPAJinqStream;
 import org.jinq.jpa.JPAQueryLogger;
 import org.jinq.jpa.JinqJPAStreamProvider;
 import org.jinq.orm.stream.JinqStream;
+import org.jinq.tuples.Pair;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -83,6 +84,38 @@ public class JinqDbTest {
 
         //when
         customersStream.where(c -> c.getName() != null)
+                .forEach(System.out::println);
+    }
+
+    @Test
+    public void shouldTestSelect() {
+        //given
+        JPAJinqStream<Customer> customersStream = streams.streamAll(em, Customer.class);
+
+        //when
+        customersStream.select(c -> c.getSalary() )
+                .forEach(System.out::println);
+    }
+
+    @Test
+    public void shouldTestSelectPair() {
+        //given
+        JPAJinqStream<Customer> customersStream = streams.streamAll(em, Customer.class);
+
+        //when
+        customersStream.select( (c, source) -> new Pair<String, Object>(c.getName(),
+                        source.stream(Customer.class).
+                                where(c2 -> c2.getSalary() > c.getSalary()).count()))
+                .forEach(System.out::println);
+    }
+
+    @Test
+    public void shouldTestWhereInSource() {
+        //given
+        JPAJinqStream<Customer> customersStream = streams.streamAll(em, Customer.class);
+
+        //when
+        customersStream.where( (val, source) -> source.stream(Customer.class).max(cc -> cc.getCustomerid()) == val.getCustomerid())
                 .forEach(System.out::println);
     }
 
