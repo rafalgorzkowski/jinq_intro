@@ -11,6 +11,7 @@ import javax.persistence.Table;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -98,4 +99,16 @@ public class Supplier implements Serializable {
       this.items = items;
    }
 
+   @Override
+   public String toString() {
+      return "Supplier{" +
+              "supplierid=" + supplierid +
+              ", country='" + country + '\'' +
+              ", name='" + name + '\'' +
+              ", items=" + items +
+              ", revenue=" + revenue +
+              ", hasFreeShipping=" + hasFreeShipping +
+              ", signature=" + Arrays.toString(signature) +
+              '}';
+   }
 }

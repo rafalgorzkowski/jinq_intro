@@ -11,11 +11,13 @@
         <jinq.version>1.8.10</jinq.version>
         <spring.version>4.2.5.RELEASE</spring.version>
         <junit.version>4.12</junit.version>
-        <eclipselink.version>2.5.1</eclipselink.version>
+        <eclipselink.version>2.6.2</eclipselink.version>
         <assertj.version>3.4.0</assertj.version>
         <dbh2.version>1.4.187</dbh2.version>
         <derby.version>10.10.1.1</derby.version>
         <hsqldb.version>2.3.2</hsqldb.version>
+        <log4j.version>1.2.15</log4j.version>
+        <hibernate.version>5.0.1.Final</hibernate.version>
     </properties>
 
     <dependencies>
@@ -38,11 +40,22 @@
         </dependency>
 
         <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+
+<!--        <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>eclipselink</artifactId>
             <version>${eclipselink.version}</version>
-        </dependency>
+        </dependency>-->
 
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
         <!-- Spring JDBC -->
         <dependency>
             <groupId>org.springframework</groupId>
