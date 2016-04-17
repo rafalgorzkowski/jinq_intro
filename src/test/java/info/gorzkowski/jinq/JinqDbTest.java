@@ -178,7 +178,26 @@ public class JinqDbTest {
 
         count = customers.where(c -> c.getSalary() > salary).count();
         System.out.println("customers.where(c -> c.getSalary() > 300).count() ---> " + count);
+    }
 
+    @Test
+    public void where_with_not_null() {
+        //given
+        JPAJinqStream<Customer> customers = streams.streamAll(em, Customer.class);
+
+        //when,then
+        customers.where(c -> c.getName() != null).forEach(System.out::println);
+    }
+
+    @Test
+    public void concatenation() {
+        //given
+        JPAJinqStream<Customer> customers = streams.streamAll(em, Customer.class);
+
+        //when, then
+        customers.select(c -> "Name -> " + c.getName()).forEach(System.out::println);
+//        customers.select(c -> c.getName() + null).forEach(System.out::println);
+//        customers.select(c -> c.getName() + 1).forEach(System.out::println);
     }
 
     @After
