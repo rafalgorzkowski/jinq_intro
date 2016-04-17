@@ -26,6 +26,7 @@ import org.jinq.jpa.JPAQueryLogger;
 import org.jinq.jpa.JinqJPAStreamProvider;
 import org.jinq.orm.stream.JinqStream;
 import org.jinq.tuples.Pair;
+import org.jinq.tuples.Tuple3;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -224,7 +225,7 @@ public class JinqDbTest {
         JPAJinqStream<Customer> customers = streams.streamAll(em, Customer.class);
 
         //when, then
-        customers.sortedBy(c -> c.getName() ).limit(2).forEach(System.out::println);
+        customers.sortedBy(c -> c.getName()).limit(2).forEach(System.out::println);
     }
 
     @Test
@@ -233,7 +234,23 @@ public class JinqDbTest {
         JPAJinqStream<Sale> sales = streams.streamAll(em, Sale.class);
 
         //when, then
-        sales.where( s -> s.getCustomer().getName().equals("Alice")).forEach(System.out::println);
+        sales.where(s -> s.getCustomer().getName().equals("Alice")).forEach(System.out::println);
+    }
+
+    @Test
+    public void pairs() {
+        //given
+        JPAJinqStream<Sale> sales = streams.streamAll(em, Sale.class);
+
+        //when,then
+        sales.select(sale -> new Pair<>(sale.getSaleid(), sale.getDate()))
+                .forEach(System.out::println);
+
+        sales.select(sale -> new Pair<>(sale.getSaleid(), sale.getCustomer().getName() + ":" + sale.getCustomer().getCountry()))
+                .forEach(System.out::println);
+
+        sales.select(sale -> new Tuple3<>(sale.getSaleid(), sale.getCustomer().getName(), sale.getCustomer().getCountry()))
+                .forEach(System.out::println);
     }
 
     @After
