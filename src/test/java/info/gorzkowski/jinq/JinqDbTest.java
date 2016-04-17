@@ -253,6 +253,17 @@ public class JinqDbTest {
                 .forEach(System.out::println);
     }
 
+    @Test
+    public void grouping() {
+        //given
+        JPAJinqStream<Customer> customers = streams.streamAll(em, Customer.class);
+
+        //when, then
+        customers.select(c -> new Pair(c.getCountry(), c.getName())).forEach(System.out::println);
+        customers.group(c -> c.getCountry(), (country, stream2) -> stream2.count())
+                .forEach(System.out::println);
+    }
+
     @After
     public void tearDown() {
         em.close();
