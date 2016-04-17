@@ -218,6 +218,15 @@ public class JinqDbTest {
         return c.getName().equals("Alice");
     }
 
+    @Test
+    public void sortAndLimit() {
+        //given
+        JPAJinqStream<Customer> customers = streams.streamAll(em, Customer.class);
+
+        //when, then
+        customers.sortedBy(c -> c.getName() ).limit(2).forEach(System.out::println);
+    }
+
     @After
     public void tearDown() {
         em.close();
