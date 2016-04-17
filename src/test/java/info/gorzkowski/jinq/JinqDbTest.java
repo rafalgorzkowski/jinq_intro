@@ -28,6 +28,7 @@ import org.jinq.orm.stream.JinqStream;
 import org.jinq.tuples.Pair;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 
@@ -198,6 +199,23 @@ public class JinqDbTest {
         customers.select(c -> "Name -> " + c.getName()).forEach(System.out::println);
 //        customers.select(c -> c.getName() + null).forEach(System.out::println);
 //        customers.select(c -> c.getName() + 1).forEach(System.out::println);
+    }
+
+    @Test
+    @Ignore
+    public void testWithMethod() {
+        //given
+        JPAJinqStream<Customer> customers = streams.streamAll(em, Customer.class);
+
+        //when, then
+        customers
+                .where(c -> isAlice(c))
+                .forEach(System.out::println);
+
+    }
+
+    private boolean isAlice(Customer c) {
+        return c.getName().equals("Alice");
     }
 
     @After
