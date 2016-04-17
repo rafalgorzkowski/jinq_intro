@@ -166,6 +166,21 @@ public class JinqDbTest {
         )).ifPresent(System.out::println);
     }
 
+    @Test
+    public void filter_vs_where() {
+        //given
+        JPAJinqStream<Customer> customers = streams.streamAll(em, Customer.class);
+        int salary = 300;
+
+        //when, then
+        long count = customers.filter(c -> c.getSalary() > salary).count();
+        System.out.println("customers.filter(c -> c.getSalary() > 300).count() ---> " + count);
+
+        count = customers.where(c -> c.getSalary() > salary).count();
+        System.out.println("customers.where(c -> c.getSalary() > 300).count() ---> " + count);
+
+    }
+
     @After
     public void tearDown() {
         em.close();
