@@ -12,6 +12,12 @@
 
 package info.gorzkowski.jinq;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
+import java.util.Optional;
+
 import info.gorzkowski.jinq.jpa.model.Customer;
 import info.gorzkowski.jinq.jpa.model.Lineorder;
 import info.gorzkowski.jinq.jpa.model.Sale;
@@ -24,10 +30,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
 public class JinqDbTest {
 
@@ -150,6 +152,18 @@ public class JinqDbTest {
                 .where(c -> c.getName().equals("Alice"))
                 .forEach(System.out::println);
 
+    }
+
+    @Test
+    public void aggregateExample() {
+        //given
+        JPAJinqStream<Customer> customers = streams.streamAll(em, Customer.class);
+
+        //when,then
+        Optional.of(customers.aggregate(
+                stream -> stream.max(c -> c.getSalary()),
+                stream -> stream.avg(c -> c.getSalary())
+        )).ifPresent(System.out::println);
     }
 
     @After
