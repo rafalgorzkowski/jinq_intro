@@ -227,6 +227,15 @@ public class JinqDbTest {
         customers.sortedBy(c -> c.getName() ).limit(2).forEach(System.out::println);
     }
 
+    @Test
+    public void association() {
+        //given
+        JPAJinqStream<Sale> sales = streams.streamAll(em, Sale.class);
+
+        //when, then
+        sales.where( s -> s.getCustomer().getName().equals("Alice")).forEach(System.out::println);
+    }
+
     @After
     public void tearDown() {
         em.close();
