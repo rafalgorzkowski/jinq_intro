@@ -271,7 +271,7 @@ public class JinqDbTest {
         JPAJinqStream<Customer> customers = streams.streamAll(em, Customer.class);
 
         //when
-        customers.join(c -> streams.streamAll(em, Item.class)).forEach(System.out::println);
+        customers.join((c, source) -> source.stream(Item.class)).forEach(System.out::println);
     }
 
     @After
