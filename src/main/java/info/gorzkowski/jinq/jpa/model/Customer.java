@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import java.io.Serializable;
 import java.util.List;
@@ -64,6 +65,11 @@ public class Customer implements Serializable {
 
 
    public String getName() {
+      return this.name;
+   }
+
+   @Transient
+   public String getFirstName() {
       return this.name;
    }
 

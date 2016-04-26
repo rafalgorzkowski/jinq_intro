@@ -264,6 +264,15 @@ public class JinqDbTest {
                 .forEach(System.out::println);
     }
 
+    @Test
+    public void registerAssociationAttribute() {
+        //given
+        JPAJinqStream<Customer> customers = streams.streamAll(em, Customer.class);
+
+        //when
+        customers.select(c -> c.getFirstName()).forEach(System.out::println);
+    }
+
     @After
     public void tearDown() {
         em.close();
