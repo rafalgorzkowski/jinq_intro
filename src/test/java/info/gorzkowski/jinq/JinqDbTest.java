@@ -19,6 +19,7 @@ import javax.persistence.Persistence;
 import java.util.Optional;
 
 import info.gorzkowski.jinq.jpa.model.Customer;
+import info.gorzkowski.jinq.jpa.model.Item;
 import info.gorzkowski.jinq.jpa.model.Lineorder;
 import info.gorzkowski.jinq.jpa.model.Sale;
 import org.jinq.jpa.JPAJinqStream;
@@ -262,6 +263,15 @@ public class JinqDbTest {
         customers.select(c -> new Pair(c.getCountry(), c.getName())).forEach(System.out::println);
         customers.group(c -> c.getCountry(), (country, stream2) -> stream2.count())
                 .forEach(System.out::println);
+    }
+
+    @Test
+    public void serializableTest() {
+        //given
+        JPAJinqStream<Customer> customers = streams.streamAll(em, Customer.class);
+
+        //when
+        customers.join(c -> streams.streamAll(em, Item.class)).forEach(System.out::println);
     }
 
     @After
