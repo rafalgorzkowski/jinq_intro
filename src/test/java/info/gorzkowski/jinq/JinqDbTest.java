@@ -76,7 +76,7 @@ public class JinqDbTest {
 
         //when
         customersStream.where(c -> c.getName().equals("Alice"))
-                .selectAllList(c -> c.getSales())
+                .selectAll(c -> JinqStream.from(c.getSales()))
                 .where(s -> JinqStream.from(s.getLineorders()).count() > 1)
                 .forEach(System.out::println);
     }
