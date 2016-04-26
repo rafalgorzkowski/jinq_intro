@@ -16,15 +16,20 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import java.util.Collections;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import info.gorzkowski.jinq.jpa.model.Customer;
 import info.gorzkowski.jinq.jpa.model.Lineorder;
 import info.gorzkowski.jinq.jpa.model.Sale;
+import org.assertj.core.api.Assertions;
+import org.assertj.core.util.Lists;
 import org.jinq.jpa.JPAJinqStream;
 import org.jinq.jpa.JPAQueryLogger;
 import org.jinq.jpa.JinqJPAStreamProvider;
 import org.jinq.orm.stream.JinqStream;
+import org.jinq.orm.stream.NonQueryJinqStream;
 import org.jinq.tuples.Pair;
 import org.jinq.tuples.Tuple3;
 import org.junit.After;
@@ -261,6 +266,22 @@ public class JinqDbTest {
         //when, then
         customers.select(c -> new Pair(c.getCountry(), c.getName())).forEach(System.out::println);
         customers.group(c -> c.getCountry(), (country, stream2) -> stream2.count())
+                .forEach(System.out::println);
+    }
+
+    @Test
+    public void nonQueryTest() {
+        new NonQueryJinqStream<>(Stream.of(1, 2, 3, 4, 5)).where(v -> v > 3).forEach(System.out::println);
+
+        Pair<Long, Integer> aggregate =
+                new NonQueryJinqStream<>(Stream.of(1, 2, 3, 4, 5, 6, 7)).aggregate(val -> val.sumInteger(x -> x), val -> val.max(x -> x));
+        Assertions.assertThat(aggregate.getOne()).isEqualTo(7 * (7 + 1) / 2);
+
+       /* new NonQueryJinqStream<>(Stream.of(0, 1, 2))
+                .leftOuterJoin(n -> JinqStream.from(Collections.<Integer>nCopies(n, 1))).forEach(System.out::println);
+*/
+        new NonQueryJinqStream<>(Stream.of(0, 1, 2))
+                .leftOuterJoin(n -> JinqStream.from(Lists.newArrayList(null, 6, 7)))
                 .forEach(System.out::println);
     }
 
